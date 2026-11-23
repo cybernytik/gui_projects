@@ -6,8 +6,8 @@ ctk.set_appearance_mode("dark")
 
 root = ctk.CTk()
 root.title("calculator by cybernytik")
-root.geometry("420x620")
-root.minsize(360, 540)
+root.geometry("420x680")
+root.minsize(380, 620)
 root.configure(fg_color="#190F15")
 
 # ЦВЕТОВАЯ ПАЛИТРА
@@ -21,6 +21,9 @@ ACCENT = "#D65B7B"
 TEXT = "#F8E8ED"
 SECONDARY = "#B99AA5"
 
+# СОЗДАНИЕ СПИСКА ДЛЯ ИСТОРИИ ВЫЧИСЛЕНИЙ
+history = []
+
 # ЗАГОЛОВОК
 title = ctk.CTkLabel(
     root,
@@ -28,7 +31,7 @@ title = ctk.CTkLabel(
     font=("Verdana", 22, "bold"),
     text_color=TEXT
 )
-title.pack(pady=(25, 15))
+title.pack(pady=(15, 8))
 
 # ПАНЕЛЬ ВВОДА
 display_frame = ctk.CTkFrame(
@@ -36,7 +39,7 @@ display_frame = ctk.CTkFrame(
     fg_color=PANEL,
     corner_radius=20
 )
-display_frame.pack(fill="x", padx=20, pady=10)
+display_frame.pack(fill="x", padx=20, pady=5)
 
 def validate_input(new_value):
     allowed = "0123456789+-*/(). "
@@ -88,20 +91,46 @@ def backspace():
     if position > 0:
         entry.delete(position - 1, position)
 
+def update_history():
+    history_label.configure(
+        text="\n".join(history)
+    )
+
+
 def calculate():
     expression = entry.get()
 
     try:
         result = calculate_expression(expression)
+
+        history.append(f"{expression} = {result}")
+
+        # Оставляем только три последних вычисления
+        if len(history) > 3:
+            history.pop(0)
+
+        update_history()
+
         entry.delete(0, "end")
         entry.insert(0, str(result))
-        message.configure(text="Результат вычислен", text_color=SECONDARY)
+
+        message.configure(
+            text="Результат вычислен",
+            text_color=SECONDARY
+        )
 
     except ZeroDivisionError:
-        message.configure(text="Деление на ноль!", text_color=ACCENT)
+        message.configure(
+            text="Деление на ноль!",
+            text_color=ACCENT
+        )
 
     except (ValueError, SyntaxError, TypeError, OverflowError):
-        message.configure(text="Некорректное выражение", text_color=ACCENT)
+        message.configure(
+            text="Некорректное выражение",
+            text_color=ACCENT
+        )
+
 
 # КНОПКИ
 buttons = [
@@ -117,7 +146,7 @@ button_frame = ctk.CTkFrame(
     root,
     fg_color=BG
 )
-button_frame.pack(fill="both", expand=True, padx=20, pady=15)
+button_frame.pack(fill="both", expand=True, padx=20, pady=8)
 
 for i in range(4):
     button_frame.grid_columnconfigure(i, weight=1)
@@ -228,6 +257,38 @@ root.bind("<Return>", lambda event: calculate())
 
 # ОЧИСТКА ПО ESCAPE
 root.bind("<Escape>", lambda event: clear())
+
+# ПАНЕЛЬ ИСТОРИИ
+history_frame = ctk.CTkFrame(
+    root,
+    fg_color=PANEL,
+    corner_radius=15
+)
+
+history_frame.pack(
+    fill="x",
+    padx=20,
+    pady=(0, 10)
+)
+
+history_title = ctk.CTkLabel(
+    history_frame,
+    text="RECENT HISTORY",
+    font=("Verdana", 12, "bold"),
+    text_color=SECONDARY
+)
+
+history_title.pack(anchor="w", padx=15, pady=(7, 3))
+
+history_label = ctk.CTkLabel(
+    history_frame,
+    text="История пока пуста",
+    font=("Verdana", 12),
+    text_color=TEXT,
+    justify="left"
+)
+
+history_label.pack(anchor="w", padx=15, pady=(0, 7))
 
 # ЗАПУСК
 root.mainloop()
