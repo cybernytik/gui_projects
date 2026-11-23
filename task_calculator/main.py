@@ -42,6 +42,7 @@ display_frame = ctk.CTkFrame(
 display_frame.pack(fill="x", padx=20, pady=5)
 
 def validate_input(new_value):
+    
     allowed = "0123456789+-*/(). "
 
     if len(new_value) > 100:
@@ -50,7 +51,16 @@ def validate_input(new_value):
     # Разрешаем буквы только для sqrt
     cleaned = new_value.replace("sqrt", "")
 
-    return all(char in allowed for char in cleaned)
+    if cleaned.isalpha():
+        return False
+
+    return all(
+        char in allowed or char.isalpha()
+        for char in new_value
+    ) and all(
+        part == "sqrt" or not part.isalpha()
+        for part in new_value.split()
+    )
 
 entry = ctk.CTkEntry(
     display_frame,
@@ -78,6 +88,7 @@ message.pack(anchor="e", padx=15, pady=(0, 10))
 # ФУНКЦИИ
 def add_to_entry(value):
     entry.insert("insert", value)
+    message.configure(text="")
 
 def square():
     add_to_entry("**2")
@@ -90,6 +101,8 @@ def backspace():
     position = entry.index("insert")
     if position > 0:
         entry.delete(position - 1, position)
+
+    message.configure(text="")
 
 def update_history():
     history_label.configure(
@@ -160,8 +173,6 @@ for text, column, row in buttons:
     if text == "AC":
         command = clear
         color = OPERATOR
-
-
 
     elif text == "√":
         command = lambda: add_to_entry("sqrt(")
@@ -245,10 +256,10 @@ equal_button.grid(
 )
 
 # ВЫЧИСЛЕНИЕ ПО ENTER
-root.bind("<Return>", lambda event: calculate())
+root.bind_all("<Return>", lambda event: calculate())
 
 # ОЧИСТКА ПО ESCAPE
-root.bind("<Escape>", lambda event: clear())
+root.bind_all("<Escape>", lambda event: clear())
 
 # ПАНЕЛЬ ИСТОРИИ
 history_frame = ctk.CTkFrame(
