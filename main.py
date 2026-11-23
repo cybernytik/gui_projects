@@ -1,3 +1,5 @@
+import tkinter as tk
+from tkinter import ttk
 import customtkinter as ctk
 
 # Настройки внешнего вида
@@ -83,5 +85,32 @@ table_title = ctk.CTkLabel(
 )
 table_title.pack(anchor="w", padx=20, pady=20)
 
-root.mainloop()
+# Названия колонок
+columns = ("name", "age", "gender", "height", "weight", "bmi")
 
+# Создание таблицы
+table = ttk.Treeview(
+    table_frame,
+    columns=columns,
+    show="headings"
+)
+
+table.heading("name", text="ФИО")
+table.heading("age", text="Возраст")
+table.heading("gender", text="Пол")
+table.heading("height", text="Рост")
+table.heading("weight", text="Вес")
+table.heading("bmi", text="ИМТ")
+
+# Ширина колонок
+table.column("name", width=240, anchor="w")
+table.column("age", width=90, anchor="center")
+table.column("gender", width=100, anchor="center")
+table.column("height", width=100, anchor="center")
+table.column("weight", width=100, anchor="center")
+table.column("bmi", width=100, anchor="center")
+
+table.pack(fill="both", expand=True, padx=15, pady=(0, 15))
+
+
+root.mainloop()
