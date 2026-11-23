@@ -42,24 +42,23 @@ display_frame = ctk.CTkFrame(
 display_frame.pack(fill="x", padx=20, pady=5)
 
 def validate_input(new_value):
-    
-    allowed = "0123456789+-*/(). "
-
     if len(new_value) > 100:
         return False
 
-    # Разрешаем буквы только для sqrt
-    cleaned = new_value.replace("sqrt", "")
+    allowed = "0123456789+-*/(). "
 
-    if cleaned.isalpha():
+    # Убираем все допустимые символы
+    letters = "".join(
+        char for char in new_value
+        if char.isalpha()
+    )
+
+    if not all(char in "sqrt" for char in letters):
         return False
 
     return all(
         char in allowed or char.isalpha()
         for char in new_value
-    ) and all(
-        part == "sqrt" or not part.isalpha()
-        for part in new_value.split()
     )
 
 entry = ctk.CTkEntry(
