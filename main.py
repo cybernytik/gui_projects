@@ -354,6 +354,30 @@ add_button = ctk.CTkButton(
 )
 add_button.pack(anchor="e", padx=15, pady=(0, 12))
 
+# Кнопка изменения
+edit_button = ctk.CTkButton(
+    table_frame,
+    text="Редактировать",
+    fg_color=TEAL,
+    hover_color=ACCENT,
+    text_color=TEXT,
+    corner_radius=12,
+    command=edit_patient
+)
+edit_button.pack(anchor="e", padx=15, pady=(0, 8))
+
+# Кнопка удаления
+delete_button = ctk.CTkButton(
+    table_frame,
+    text="Удалить",
+    fg_color="#D98282",
+    hover_color="#C76565",
+    text_color="white",
+    corner_radius=12,
+    command=delete_patient
+)
+delete_button.pack(anchor="e", padx=15, pady=(0, 12))
+
 # Размещение таблицы
 table.pack(fill="both", expand=True, padx=15, pady=(0, 15))
 
