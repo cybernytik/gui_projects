@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 import customtkinter as ctk
 from tkinter import messagebox            # диалоговое окно подтверждения
+import json
+from pathlib import Path
 
 # Настройки внешнего вида
 ctk.set_appearance_mode("light")
@@ -21,6 +23,8 @@ BUTTON = "#4E91BD"
 TEXT = "#243746"
 SECONDARY = "#8296A5"
 BORDER = "#DCEAF2"
+
+DATA_FILE = Path(__file__).with_name("patients.json")
 
 # Заголовок приложения
 header = ctk.CTkFrame(root, fg_color="transparent")
@@ -197,7 +201,7 @@ def add_patient():
         # Обновляем количество пациентов
         count = len(table.get_children())
         patients_count.configure(text=str(count))
-
+        save_patients()
         form.destroy()
 
     save_button = ctk.CTkButton(
@@ -305,6 +309,8 @@ def edit_patient():
             )
         )
 
+        save_patients()
+        
         form.destroy()
 
     save_button = ctk.CTkButton(
@@ -340,7 +346,7 @@ def delete_patient():
         patients_count.configure(
             text=str(len(table.get_children()))
         )
-
+    save_patients()
 
 # Кнопка добавления
 add_button = ctk.CTkButton(
@@ -382,4 +388,74 @@ delete_button.pack(anchor="e", padx=15, pady=(0, 12))
 table.pack(fill="both", expand=True, padx=15, pady=(0, 15))
 
 
+# Сохранение пациентов в JSON
+def save_patients():
+    patients = []
+
+    for item in table.get_children():
+        values = table.item(item, "values")
+
+        patient = {
+            "name": values[0],
+            "age": values[1],
+            "gender": values[2],
+            "height": values[3],
+            "weight": values[4],
+            "bmi": values[5]
+        }
+
+        patients.append(patient)
+
+    try:
+        with open(DATA_FILE, "w", encoding="utf-8") as file:
+            json.dump(
+                patients,
+                file,
+                ensure_ascii=False,
+                indent=4
+            )
+    except OSError:
+        messagebox.showerror(
+            "Ошибка",
+            "Не удалось сохранить данные"
+        )
+
+
+# Загрузка пациентов из JSON
+def load_patients():
+    if not DATA_FILE.exists():
+        return
+
+    try:
+        with open(DATA_FILE, "r", encoding="utf-8") as file:
+            patients = json.load(file)
+
+        if not isinstance(patients, list):
+            raise ValueError("Некорректный формат файла")
+
+        for patient in patients:
+            table.insert(
+                "",
+                "end",
+                values=(
+                    patient["name"],
+                    patient["age"],
+                    patient["gender"],
+                    patient["height"],
+                    patient["weight"],
+                    patient["bmi"]
+                )
+            )
+
+        patients_count.configure(
+            text=str(len(table.get_children()))
+        )
+
+    except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError):
+        messagebox.showerror(
+            "Ошибка",
+            "Не удалось загрузить данные пациентов"
+        )
+
+load_patients()
 root.mainloop()
