@@ -110,6 +110,120 @@ table.column("height", width=100, anchor="center")
 table.column("weight", width=100, anchor="center")
 table.column("bmi", width=100, anchor="center")
 
+# Окно добавления пациента
+def add_patient():
+    form = ctk.CTkToplevel(root)
+    form.title("Добавление пациента")
+    form.geometry("400x500")
+    form.resizable(False, False)
+    form.configure(fg_color=BG)
+    form.transient(root)
+    form.grab_set()
+
+    form_title = ctk.CTkLabel(
+        form,
+        text="Новый пациент",
+        font=("Arial", 22, "bold"),
+        text_color=TEXT
+    )
+    form_title.pack(pady=(25, 20))
+
+    # Поля формы
+    name_entry = ctk.CTkEntry(form, placeholder_text="ФИО")
+    name_entry.pack(fill="x", padx=30, pady=8)
+
+    age_entry = ctk.CTkEntry(form, placeholder_text="Возраст")
+    age_entry.pack(fill="x", padx=30, pady=8)
+
+    gender_box = ctk.CTkComboBox(
+        form,
+        values=["Мужской", "Женский"]
+    )
+    gender_box.pack(fill="x", padx=30, pady=8)
+    gender_box.set("Мужской")
+
+    height_entry = ctk.CTkEntry(form, placeholder_text="Рост (см)")
+    height_entry.pack(fill="x", padx=30, pady=8)
+
+    weight_entry = ctk.CTkEntry(form, placeholder_text="Вес (кг)")
+    weight_entry.pack(fill="x", padx=30, pady=8)
+
+    message = ctk.CTkLabel(
+        form,
+        text="",
+        text_color="#D65B5B"
+    )
+    message.pack(pady=5)
+
+    def save_patient():
+        name = name_entry.get().strip()
+        age = age_entry.get().strip()
+        gender = gender_box.get()
+        height = height_entry.get().strip()
+        weight = weight_entry.get().strip()
+
+        if not name or not age or not height or not weight:
+            message.configure(text="Заполните все поля")
+            return
+
+        try:
+            age = int(age)
+            height = float(height.replace(",", "."))
+            weight = float(weight.replace(",", "."))
+
+            if age <= 0 or height <= 0 or weight <= 0:
+                raise ValueError
+
+            bmi = weight / (height / 100) ** 2            # расчет ИМТ
+
+        except ValueError:
+            message.configure(text="Проверьте введённые данные")
+            return
+
+        table.insert(
+            "",
+            "end",
+            values=(
+                name,
+                age,
+                gender,
+                height,
+                weight,
+                round(bmi, 1)
+            )
+        )
+
+        # Обновляем количество пациентов
+        count = len(table.get_children())
+        patients_count.configure(text=str(count))
+
+        form.destroy()
+
+    save_button = ctk.CTkButton(
+        form,
+        text="Сохранить пациента",
+        fg_color=BUTTON,
+        hover_color=ACCENT,
+        text_color="white",
+        corner_radius=12,
+        command=save_patient
+    )
+    save_button.pack(fill="x", padx=30, pady=15)
+
+
+# Кнопка добавления
+add_button = ctk.CTkButton(
+    table_frame,
+    text="+ Добавить пациента",
+    fg_color=BUTTON,
+    hover_color=ACCENT,
+    text_color="white",
+    corner_radius=12,
+    command=add_patient
+)
+add_button.pack(anchor="e", padx=15, pady=(0, 12))
+
+# Размещение таблицы
 table.pack(fill="both", expand=True, padx=15, pady=(0, 15))
 
 
