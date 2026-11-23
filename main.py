@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import customtkinter as ctk
+from tkinter import messagebox            # диалоговое окно подтверждения
 
 # Настройки внешнего вида
 ctk.set_appearance_mode("light")
@@ -209,6 +210,136 @@ def add_patient():
         command=save_patient
     )
     save_button.pack(fill="x", padx=30, pady=15)
+
+
+# Редактирование пациента
+def edit_patient():
+    selected = table.selection()
+
+    if not selected:
+        messagebox.showwarning(
+            "Внимание",
+            "Сначала выберите пациента"
+        )
+        return
+
+    item = selected[0]
+    values = table.item(item, "values")
+
+    form = ctk.CTkToplevel(root)
+    form.title("Редактирование пациента")
+    form.geometry("400x500")
+    form.resizable(False, False)
+    form.configure(fg_color=BG)
+    form.transient(root)
+    form.grab_set()
+
+    title = ctk.CTkLabel(
+        form,
+        text="Редактирование данных",
+        font=("Arial", 22, "bold"),
+        text_color=TEXT
+    )
+    title.pack(pady=(25, 20))
+
+    name_entry = ctk.CTkEntry(form, placeholder_text="ФИО")
+    name_entry.pack(fill="x", padx=30, pady=8)
+    name_entry.insert(0, values[0])
+
+    age_entry = ctk.CTkEntry(form, placeholder_text="Возраст")
+    age_entry.pack(fill="x", padx=30, pady=8)
+    age_entry.insert(0, values[1])
+
+    gender_box = ctk.CTkComboBox(
+        form,
+        values=["Мужской", "Женский"]
+    )
+    gender_box.pack(fill="x", padx=30, pady=8)
+    gender_box.set(values[2])
+
+    height_entry = ctk.CTkEntry(form, placeholder_text="Рост (см)")
+    height_entry.pack(fill="x", padx=30, pady=8)
+    height_entry.insert(0, values[3])
+
+    weight_entry = ctk.CTkEntry(form, placeholder_text="Вес (кг)")
+    weight_entry.pack(fill="x", padx=30, pady=8)
+    weight_entry.insert(0, values[4])
+
+    message = ctk.CTkLabel(form, text="", text_color="#D65B5B")
+    message.pack(pady=5)
+
+    def save_changes():
+        name = name_entry.get().strip()
+        age = age_entry.get().strip()
+        gender = gender_box.get()
+        height = height_entry.get().strip()
+        weight = weight_entry.get().strip()
+
+        if not name or not age or not height or not weight:
+            message.configure(text="Заполните все поля")
+            return
+
+        try:
+            age = int(age)
+            height = float(height.replace(",", "."))
+            weight = float(weight.replace(",", "."))
+
+            if age <= 0 or height <= 0 or weight <= 0:
+                raise ValueError
+
+            bmi = weight / (height / 100) ** 2
+
+        except ValueError:
+            message.configure(text="Проверьте введённые данные")
+            return
+
+        table.item(
+            item,
+            values=(
+                name,
+                age,
+                gender,
+                height,
+                weight,
+                round(bmi, 1)
+            )
+        )
+
+        form.destroy()
+
+    save_button = ctk.CTkButton(
+        form,
+        text="Сохранить изменения",
+        fg_color=BUTTON,
+        hover_color=ACCENT,
+        command=save_changes
+    )
+    save_button.pack(fill="x", padx=30, pady=15)
+
+
+# Удаление пациента
+def delete_patient():
+    selected = table.selection()
+
+    if not selected:
+        messagebox.showwarning(
+            "Внимание",
+            "Сначала выберите пациента"
+        )
+        return
+
+    answer = messagebox.askyesno(            # функция для создания диалогового окна с вопросом yes/no (в случае yes -> возвращение булевой True, в случае no -> возвращение булевой False, чем отличается от askquestion, где возвращаются 'yes' и 'no')
+        "Подтверждение",
+        "Удалить выбранного пациента?"
+    )
+
+    if answer:
+        for item in selected:
+            table.delete(item)
+
+        patients_count.configure(
+            text=str(len(table.get_children()))
+        )
 
 
 # Кнопка добавления
