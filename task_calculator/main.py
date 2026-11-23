@@ -161,13 +161,7 @@ for text, column, row in buttons:
         command = clear
         color = OPERATOR
 
-    elif text == "⌫":
-        command = backspace
-        color = OPERATOR
 
-    elif text == "=":
-        command = calculate
-        color = ACCENT
 
     elif text == "√":
         command = lambda: add_to_entry("sqrt(")
@@ -186,8 +180,6 @@ for text, column, row in buttons:
 
     hover = OPERATOR_HOVER if color == OPERATOR else BUTTON_HOVER
 
-    if text == "=":
-        hover = OPERATOR_HOVER
 
     button = ctk.CTkButton(
         button_frame,
@@ -209,48 +201,48 @@ for text, column, row in buttons:
         sticky="nsew"
     )
 
-    # КНОПКА УДАЛЕНИЯ ОДНОГО СИМВОЛА
-    delete_button = ctk.CTkButton(
-        button_frame,
-        text="⌫",
-        font=("Verdana", 20, "bold"),
-        fg_color=OPERATOR,
-        hover_color=OPERATOR_HOVER,
-        text_color=TEXT,
-        corner_radius=16,
-        command=backspace
-    )
+# КНОПКА УДАЛЕНИЯ ОДНОГО СИМВОЛА
+delete_button = ctk.CTkButton(
+    button_frame,
+    text="⌫",
+    font=("Verdana", 20, "bold"),
+    fg_color=OPERATOR,
+    hover_color=OPERATOR_HOVER,
+    text_color=TEXT,
+    corner_radius=16,
+    command=backspace
+)
 
-    delete_button.grid(
-        row=5,
-        column=0,
-        columnspan=2,
-        padx=5,
-        pady=5,
-        sticky="nsew"
-    )
+delete_button.grid(
+    row=5,
+    column=0,
+    columnspan=2,
+    padx=5,
+    pady=5,
+    sticky="nsew"
+)
 
 
-    # КНОПКА РАВНО
-    equal_button = ctk.CTkButton(
-        button_frame,
-        text="=",
-        font=("Verdana", 20, "bold"),
-        fg_color=ACCENT,
-        hover_color=OPERATOR_HOVER,
-        text_color=TEXT,
-        corner_radius=16,
-        command=calculate
-    )
+# КНОПКА РАВНО
+equal_button = ctk.CTkButton(
+    button_frame,
+    text="=",
+    font=("Verdana", 20, "bold"),
+    fg_color=ACCENT,
+    hover_color=OPERATOR_HOVER,
+    text_color=TEXT,
+    corner_radius=16,
+    command=calculate
+)
     
-    equal_button.grid(
-        row=5,
-        column=2,
-        columnspan=2,
-        padx=5,
-        pady=5,
-        sticky="nsew"
-    )
+equal_button.grid(
+    row=5,
+    column=2,
+    columnspan=2,
+    padx=5,
+    pady=5,
+    sticky="nsew"
+)
 
 # ВЫЧИСЛЕНИЕ ПО ENTER
 root.bind("<Return>", lambda event: calculate())
