@@ -2,6 +2,8 @@
 import json
 import math
 from pathlib import Path
+from faker import Faker
+import random
 
 
 ALLOWED_GENDERS = ["Мужской", "Женский"]
@@ -102,3 +104,34 @@ def load_patients(file_path):      # загружает пациентов из 
         patients.append(patient)
 
     return patients
+
+def generate_fake_patients(count):            # создает заданное количество тестовых пациентов с генерированными данными
+
+    if not isinstance(count, int) or count < 1:
+        raise ValueError("Количество пациентов должно быть положительным целым числом")
+
+    fake = Faker("ru_RU")            # генератор русскоязычных имен
+
+    generated_patients = []
+
+    for _ in range(count):
+
+        gender = random.choice(ALLOWED_GENDERS)            # выбирает женский/мужской пол
+
+        height = round(random.uniform(150, 195), 1)         # генерация дробного значения роста
+        weight = round(random.uniform(45, 110), 1)         # генерация дробного значения веса
+        age = random.randint(18, 90)                        # рандомное целое число возраста
+
+        data = {
+            "name": fake.name(),
+            "age": age,
+            "gender": gender,
+            "height": height,
+            "weight": weight
+        }
+
+        patient = validate_patient(data)                    # проверка записи и расчет имт
+
+        generated_patients.append(patient)
+
+    return generated_patients                            # ровное количество генераций
