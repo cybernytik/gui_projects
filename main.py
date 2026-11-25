@@ -53,13 +53,13 @@ def persist_patients():
 
 
 def select_patient(index):
-    """выбирает пациента в таблице"""
-
+    '''выбирает пациентов'''
     global selected_index
 
+    selected_for_deletion.clear()
     selected_index = index
-    render_table()
 
+    render_table()
 
 def toggle_patient_selection(index, checked):
     """добавляет пациента в список выбранных для удаления или убирает его оттуда"""
@@ -298,6 +298,7 @@ def refresh_patients():
 
     patients = updated_patients
     selected_index = None
+    selected_for_deletion.clear()
 
     render_table()
 
