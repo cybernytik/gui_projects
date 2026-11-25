@@ -430,6 +430,7 @@ def open_patient_form(index=None):
         if not persist_patients():
             patients = old_list
             return
+        selected_for_deletion.clear()
 
         render_table()
         form.destroy()
@@ -458,37 +459,6 @@ def open_patient_form(index=None):
     )
 
     cancel_button.pack()
-
-
-# удаление пациента
-def delete_patient():
-    """удаляет выбранную запись"""
-
-    global patients, selected_index
-
-    if selected_index is None:
-        return
-
-    answer = messagebox.askyesno(
-        "Подтверждение",
-        "Удалить выбранного пациента?",
-        parent=root
-    )
-
-    if not answer:
-        return
-
-    old_list = [p.copy() for p in patients]
-
-    patients.pop(selected_index)
-    selected_index = None
-
-    if not persist_patients():
-        patients = old_list
-        render_table()
-        return
-
-    render_table()
 
 
 # статистика
