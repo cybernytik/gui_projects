@@ -2,7 +2,7 @@ import customtkinter as ctk
 from tkinter import messagebox            # модуль для создания различных встроенных окон (выбор опций, встроенные сообщения и тд)
 from tkinter import simpledialog           # contains convenience classes and functions for creating simple modal dialogs to get a value from the user
 from pathlib import Path
-from patients import load_patients, save_patients, validate_patient, generate_fake_patients)
+from patients import load_patients, save_patients, validate_patient, generate_fake_patients
 from stat_patients import show_statistics
 
 # настройки графического интерфейса
