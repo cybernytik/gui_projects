@@ -145,8 +145,12 @@ def add_patient():
         values=["Мужской", "Женский"]
     )
     gender_box.pack(fill="x", padx=30, pady=8)
-    gender_box.set("Мужской")
+    gender_box.set("Женский")
 
+    if gender not in ["Мужской", "Женский"]:
+        message.configure(text="Выберите пол из списка")
+    return
+    
     height_entry = ctk.CTkEntry(form, placeholder_text="Рост (см)")
     height_entry.pack(fill="x", padx=30, pady=8)
 
@@ -261,6 +265,10 @@ def edit_patient():
     gender_box.pack(fill="x", padx=30, pady=8)
     gender_box.set(values[2])
 
+    if gender not in ["Мужской", "Женский"]:
+        message.configure(text="Выберите пол из списка")
+    return
+    
     height_entry = ctk.CTkEntry(form, placeholder_text="Рост (см)")
     height_entry.pack(fill="x", padx=30, pady=8)
     height_entry.insert(0, values[3])
@@ -433,6 +441,17 @@ def load_patients():
         if not isinstance(patients, list):
             raise ValueError("Некорректный формат файла")
 
+        required_fields = {
+            "name", "age", "gender",
+            "height", "weight", "bmi"
+        }
+
+for patient in patients: # отформатировать
+    if not isinstance(patient, dict):
+        raise ValueError("Некорректная запись")
+
+    if not required_fields.issubset(patient):
+        raise ValueError("Отсутствуют поля пациента")
         for patient in patients:
             table.insert(
                 "",
