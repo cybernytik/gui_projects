@@ -36,11 +36,10 @@
 
 - **Форма учета-отчета:**
   ``` bash
-  python task_calculator/main.py
+  python task_patients/main.py
 
 - **FastQC:**
-  ``` bash
-  python task_calculator/main.py
+  *на данный момент задание находится в разработке*
 
 ### 5. Завершение работы с виртуальным окружением и его удаление
 
@@ -49,10 +48,20 @@
   `rm -rf .venv`
 
 ## Структура репозитория
-- `task_calculator/` — исходный код калькулятора.
-
-- `task_patients/` — код для формы пациентов и построения графиков.
-
-- `task_fastqc/` — код для работы с FASTQ и визуализации.
-
-- `requirements.txt` — список зависимостей
+gui_projects/
+│
+├── task_calculator/
+│   ├── main.py
+│   └── calculations.py
+│
+├── task_patients/
+│   ├── main.py
+│   ├── patients.py
+│   ├── patient_statistics.py
+│   └── patients.json
+│
+├── task_fastqc/
+│
+├── .gitignore
+├── README.md
+└── requirements.txt
