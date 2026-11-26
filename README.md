@@ -58,7 +58,7 @@ gui_projects/
 ├── task_patients/
 │   ├── main.py
 │   ├── patients.py
-│   ├── patient_statistics.py
+│   ├── stat_patients.py
 │   └── patients.json
 │
 ├── task_fastqc/
