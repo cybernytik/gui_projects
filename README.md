@@ -48,6 +48,7 @@
   `rm -rf .venv`
 
 ## Структура репозитория
+```
 gui_projects/
 │
 ├── task_calculator/
@@ -65,3 +66,4 @@ gui_projects/
 ├── .gitignore
 ├── README.md
 └── requirements.txt
+```
